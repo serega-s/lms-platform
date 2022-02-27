@@ -1,4 +1,4 @@
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from .. import tables
@@ -11,6 +11,16 @@ class ProfileService:
         self.session = session
 
     def create_profile(self, user_id: int, profile_data: ProfileCreate) -> Profile:
+        exception = HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='Profile already exists!',
+        )
+        profile = self.session.query(
+            tables.Profile).filter_by(user_id=user_id).first()
+            
+        if profile:
+            raise exception
+
         profile = tables.Profile(**profile_data.dict(), user_id=user_id)
 
         self.session.add(profile)
