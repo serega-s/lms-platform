@@ -4,7 +4,7 @@
 
 <br />
 
-**_How To run server:_**
+**_How To Run server:_**
 
 ```
 pip install -r requirements.txt
