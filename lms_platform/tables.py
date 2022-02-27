@@ -8,7 +8,7 @@ class User(Base):
 
     id = sa.Column(sa.Integer, primary_key=True,
                    nullable=False, autoincrement=True)
-    username = sa.Column(sa.String, nullable=False, unique=True)
+    # username = sa.Column(sa.String, nullable=False, unique=True)
     email = sa.Column(sa.String, nullable=False, unique=True)
     password = sa.Column(sa.String, nullable=False)
     role = sa.Column(sa.String(10))

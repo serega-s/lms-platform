@@ -75,7 +75,7 @@ class AuthService:
 
     def register_new_user(self, user_data: UserCreate) -> Token:
         user = tables.User(
-            username=user_data.username,
+            # username=user_data.username,
             email=user_data.email,
             password=self.hash_password(user_data.password),
             role=user_data.role
@@ -86,7 +86,7 @@ class AuthService:
 
         return self.create_token(user)
 
-    def authenticate_user(self, username: str, password: str) -> Token:
+    def authenticate_user(self, email: str, password: str) -> Token: # username
         exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
@@ -95,7 +95,7 @@ class AuthService:
             }
         )
         user = self.session.query(tables.User).filter(
-            tables.User.username == username).first()
+            tables.User.email == email).first()
 
         if not user:
             raise exception
