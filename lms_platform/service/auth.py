@@ -74,6 +74,18 @@ class AuthService:
         self.profile_service = profile_service
 
     def register_new_user(self, user_data: UserCreate) -> Token:
+        exception = HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User already exists!",
+            headers={
+                'WWW-Authenticate': "Bearer"
+            }
+        )
+        user = self.session.query(tables.User).filter(
+            tables.User.email == user_data.email).first()
+        if user:
+            raise exception
+
         user = tables.User(
             # username=user_data.username,
             email=user_data.email,
@@ -86,7 +98,7 @@ class AuthService:
 
         return self.create_token(user)
 
-    def authenticate_user(self, email: str, password: str) -> Token: # username
+    def authenticate_user(self, email: str, password: str) -> Token:  # username
         exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",

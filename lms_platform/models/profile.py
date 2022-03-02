@@ -5,7 +5,7 @@ class ProfileBase(BaseModel):
     full_name: str
     phone_number: str
     bio: str
-    image: str
+    url: str
 
 
 class ProfileCreate(ProfileBase):

@@ -83,12 +83,13 @@ class Profile(Base):
     id = sa.Column(sa.Integer, primary_key=True,
                    nullable=False, autoincrement=True)
     user_id = sa.Column(sa.Integer, sa.ForeignKey(
-        "users.id", ondelete="CASCADE"), primary_key=True)
+        "users.id", ondelete="CASCADE"), nullable=False, unique=True)
     user = sa.orm.relationship("User")
     full_name = sa.Column(sa.String(150))
     bio = sa.Column(sa.String)
     phone_number = sa.Column(sa.String(100))
-    image = sa.Column(sa.String)
+    # image = sa.Column(sa.String)
+    url = sa.Column(sa.String)
     created_at = sa.Column(sa.TIMESTAMP(timezone=True),
                            nullable=False, server_default=sa.text('now()'))
 

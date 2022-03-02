@@ -28,3 +28,11 @@ def sign_in(
 @router.get('/user', response_model=User)
 def get_user(user: User = Depends(get_current_user)):
     return user
+
+@router.patch('/user', response_model=User)
+def edit_user(user: User = Depends(get_current_user)):
+    ...
+
+@router.delete('/user')
+def delete_user(user: User = Depends(get_current_user)):
+    ...

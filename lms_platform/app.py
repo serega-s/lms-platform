@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from . import tables
 from .api import router
@@ -13,6 +14,7 @@ app = FastAPI(
     description='Backend for new built LMS',
     version='1.0.0',
 )
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 origins = ["*"]
 
