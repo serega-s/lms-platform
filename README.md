@@ -1,6 +1,6 @@
 # Backend for LMS written with Python and FastAPI
 
-### Now backend in process of developing
+### Now backend is in the development
 
 <br />
 
