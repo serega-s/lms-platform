@@ -6,7 +6,7 @@ router = APIRouter(
 )
 
 
-@router.post('/{course_slug}')
+@router.post('/{course_slug}/')
 def create_lesson(course_slug: str):
     ...
 

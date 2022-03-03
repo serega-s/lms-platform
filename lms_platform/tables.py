@@ -25,6 +25,7 @@ class Course(Base):
         "users.id", ondelete="CASCADE"), nullable=False)
     title = sa.Column(sa.String(255))
     slug = sa.Column(sa.String)
+    short_description = sa.Column(sa.String)
     description = sa.Column(sa.String)
     image = sa.Column(sa.String)
     created_at = sa.Column(sa.TIMESTAMP(timezone=True),
@@ -40,6 +41,7 @@ class Lesson(Base):
         "courses.id", ondelete="CASCADE"), nullable=False)
     title = sa.Column(sa.String(255))
     slug = sa.Column(sa.String)
+    short_description = sa.Column(sa.String)
     description = sa.Column(sa.String)
     draft = sa.Column(sa.Boolean, default=True)
     created_at = sa.Column(sa.TIMESTAMP(timezone=True),
@@ -88,8 +90,7 @@ class Profile(Base):
     full_name = sa.Column(sa.String(150))
     bio = sa.Column(sa.String)
     phone_number = sa.Column(sa.String(100))
-    # image = sa.Column(sa.String)
-    url = sa.Column(sa.String)
+    image = sa.Column(sa.String)
     created_at = sa.Column(sa.TIMESTAMP(timezone=True),
                            nullable=False, server_default=sa.text('now()'))
 

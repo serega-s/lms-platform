@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.hash import bcrypt
@@ -10,7 +10,6 @@ from sqlalchemy.orm import Session
 from .. import tables
 from ..database import get_session
 from ..models.auth import Token, User, UserCreate
-from ..service.profile import ProfileService
 from ..settings import settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/api/auth/sign-in')
@@ -69,9 +68,8 @@ class AuthService:
 
         return Token(access_token=token)
 
-    def __init__(self, session: Session = Depends(get_session), profile_service: ProfileService = Depends()):
+    def __init__(self, session: Session = Depends(get_session)):
         self.session = session
-        self.profile_service = profile_service
 
     def register_new_user(self, user_data: UserCreate) -> Token:
         exception = HTTPException(
@@ -87,7 +85,6 @@ class AuthService:
             raise exception
 
         user = tables.User(
-            # username=user_data.username,
             email=user_data.email,
             password=self.hash_password(user_data.password),
             role=user_data.role
@@ -116,3 +113,17 @@ class AuthService:
             raise exception
 
         return self.create_token(user)
+
+    def delete_user(self, user_id: int):
+        user = self.session.query(tables.User).filter(
+            tables.User.id == user_id)
+
+        if user.first() is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail='User not found!')
+
+        user.delete()
+
+        self.session.commit()
+
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
