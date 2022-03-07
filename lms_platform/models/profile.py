@@ -1,4 +1,5 @@
 from typing import Optional
+
 from pydantic import BaseModel
 
 
@@ -22,14 +23,3 @@ class Profile(ProfileBase):
 
     class Config:
         orm_mode = True
-
-
-# class Student(ProfileBase):
-#     id: int
-
-#     class Config:
-#         orm_mode = True
-
-
-# class StudentCreate(ProfileBase):
-#     ...
