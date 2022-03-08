@@ -10,3 +10,14 @@
 pip install -r requirements.txt
 python -m lms_platform
 ```
+
+### API Docs Urls
+
+#### Swagger API Documenting
+```
+http://127.0.0.1:8000/api/docs/
+```
+#### Redoc API Documenting
+```
+http://127.0.0.1:8000/api/redoc/
+```
