@@ -8,8 +8,7 @@ class User(Base):
 
     id = sa.Column(sa.Integer, primary_key=True,
                    nullable=False, autoincrement=True)
-    # username = sa.Column(sa.String, nullable=False, unique=True)
-    email = sa.Column(sa.String, nullable=False, unique=True)
+    email = sa.Column(sa.String(150), nullable=False, unique=True)
     password = sa.Column(sa.String, nullable=False)
     role = sa.Column(sa.String(10))
     created_at = sa.Column(sa.TIMESTAMP(timezone=True),
@@ -25,9 +24,11 @@ class Course(Base):
         "users.id", ondelete="CASCADE"), nullable=False)
     title = sa.Column(sa.String(255))
     slug = sa.Column(sa.String)
-    short_description = sa.Column(sa.String)
-    description = sa.Column(sa.String)
+    short_description = sa.Column(sa.String(500))
+    description = sa.Column(sa.dialects.postgresql.TEXT)
     image = sa.Column(sa.String)
+    lessons = sa.orm.relationship(
+        'Lesson', backref='Lesson.id')  # lazy='dynamic'
     created_at = sa.Column(sa.TIMESTAMP(timezone=True),
                            nullable=False, server_default=sa.text('now()'))
 
@@ -37,47 +38,18 @@ class Lesson(Base):
 
     id = sa.Column(sa.Integer, primary_key=True,
                    nullable=False, autoincrement=True)
+    user_id = sa.Column(sa.Integer, sa.ForeignKey(
+        "users.id", ondelete="CASCADE"), nullable=False)
     course_id = sa.Column(sa.Integer, sa.ForeignKey(
         "courses.id", ondelete="CASCADE"), nullable=False)
     title = sa.Column(sa.String(255))
     slug = sa.Column(sa.String)
-    short_description = sa.Column(sa.String)
-    description = sa.Column(sa.String)
+    short_description = sa.Column(sa.String(500))
+    description = sa.Column(sa.dialects.postgresql.TEXT)
     draft = sa.Column(sa.Boolean, default=True)
     created_at = sa.Column(sa.TIMESTAMP(timezone=True),
                            nullable=False, server_default=sa.text('now()'))
 
-
-# class Teacher(Base):
-#     __tablename__ = 'teachers'
-
-#     id = sa.Column(sa.Integer, primary_key=True,
-#                    nullable=False, autoincrement=True)
-#     user_id = sa.Column(sa.Integer, sa.ForeignKey(
-#         "users.id", ondelete="CASCADE"), primary_key=True, unique=True)
-#     user = sa.orm.relationship("User")
-#     full_name = sa.Column(sa.String)
-#     phone_number = sa.Column(sa.String(100))
-#     bio = sa.Column(sa.String)
-#     image = sa.Column(sa.String)
-#     created_at = sa.Column(sa.TIMESTAMP(timezone=True),
-#                            nullable=False, server_default=sa.text('now()'))
-
-
-# class Student(Base):
-#     __tablename__ = 'students'
-
-#     id = sa.Column(sa.Integer, primary_key=True,
-#                    nullable=False, autoincrement=True)
-#     user_id = sa.Column(sa.Integer, sa.ForeignKey(
-#         "users.id", ondelete="CASCADE"), primary_key=True)
-#     user = sa.orm.relationship("User")
-#     full_name = sa.Column(sa.String(150))
-#     bio = sa.Column(sa.String)
-#     phone_number = sa.Column(sa.String(100))
-#     image = sa.Column(sa.String)
-#     created_at = sa.Column(sa.TIMESTAMP(timezone=True),
-#                            nullable=False, server_default=sa.text('now()'))
 
 class Profile(Base):
     __tablename__ = 'profiles'
@@ -88,7 +60,7 @@ class Profile(Base):
         "users.id", ondelete="CASCADE"), nullable=False, unique=True)
     user = sa.orm.relationship("User")
     full_name = sa.Column(sa.String(150))
-    bio = sa.Column(sa.String)
+    bio = sa.Column(sa.String(3000))
     phone_number = sa.Column(sa.String(100))
     image = sa.Column(sa.String)
     created_at = sa.Column(sa.TIMESTAMP(timezone=True),

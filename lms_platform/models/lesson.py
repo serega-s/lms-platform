@@ -5,14 +5,18 @@ class LessonBase(BaseModel):
     slug: str
     short_description: str
     description: str
-    image: str
+    draft: bool
 
 class LessonCreate(LessonBase):
+    ...
+
+class LessonUpdate(LessonBase):
     ...
 
 
 class Lesson(LessonBase):
     id: int
+    course_id: int
 
     class Config:
         orm_mode = True

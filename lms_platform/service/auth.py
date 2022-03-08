@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from fastapi import Depends, HTTPException, Response, status
+from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.hash import bcrypt
@@ -11,6 +11,8 @@ from .. import tables
 from ..database import get_session
 from ..models.auth import Token, User, UserCreate
 from ..settings import settings
+from ..statuses.exceptions import (HTTP401Exception, HTTP404Exception,
+                                   HTTP409Exception)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/api/auth/sign-in')
 
@@ -30,23 +32,18 @@ class AuthService:
 
     @classmethod
     def validate_token(cls, token: str) -> User:
-        exception = HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='Could not validate credentials',
-            headers={'WWW-Authenticate': 'Bearer'}
-        )
         try:
             payload = jwt.decode(token, settings.secret_key, algorithms=[
                                  settings.algorithm])
         except JWTError:
-            raise exception from None
+            raise HTTP401Exception()
 
         user_data = payload.get('user')
 
         try:
             user = User.parse_obj(user_data)
         except ValidationError:
-            raise exception from None
+            raise HTTP401Exception()
 
         return user
 
@@ -72,17 +69,10 @@ class AuthService:
         self.session = session
 
     def register_new_user(self, user_data: UserCreate) -> Token:
-        exception = HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User already exists!",
-            headers={
-                'WWW-Authenticate': "Bearer"
-            }
-        )
         user = self.session.query(tables.User).filter(
             tables.User.email == user_data.email).first()
         if user:
-            raise exception
+            raise HTTP409Exception()
 
         user = tables.User(
             email=user_data.email,
@@ -96,21 +86,14 @@ class AuthService:
         return self.create_token(user)
 
     def authenticate_user(self, email: str, password: str) -> Token:  # username
-        exception = HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={
-                'WWW-Authenticate': "Bearer"
-            }
-        )
         user = self.session.query(tables.User).filter(
             tables.User.email == email).first()
 
         if not user:
-            raise exception
+            raise HTTP401Exception()
 
         if not self.verify_password(password, user.password):
-            raise exception
+            raise HTTP401Exception()
 
         return self.create_token(user)
 
@@ -119,11 +102,8 @@ class AuthService:
             tables.User.id == user_id)
 
         if user.first() is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail='User not found!')
+            raise HTTP404Exception()
 
         user.delete()
 
         self.session.commit()
-
-        return Response(status_code=status.HTTP_204_NO_CONTENT)

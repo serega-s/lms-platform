@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from fastapi import APIRouter, Depends, File, UploadFile
+from fastapi import APIRouter, Depends, File, UploadFile, status
 from slugify import slugify
 
 from ..models.auth import User
@@ -57,7 +57,7 @@ def get_course(
 
 @router.patch('/{id}', response_model=Course)
 def edit_course(
-    id: int,
+    slug: str,
     title: str,
     short_description: str,
     description: str,
@@ -79,10 +79,10 @@ def edit_course(
 
     course_data = CourseCreate.parse_obj(course_obj)
 
-    return service.edit_course(user.id, id, course_data)
+    return service.edit_course(user.id, slug, course_data)
 
 
-@router.delete('/{id}')
+@router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
 def delete_course(
     id: int,
     user: User = Depends(get_current_user),

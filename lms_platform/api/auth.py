@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from ..models.auth import Token, User, UserCreate
@@ -8,6 +8,11 @@ router = APIRouter(
     prefix='/auth',
     tags=['users']
 )
+
+
+@router.get('/user', response_model=User)
+def get_user(user: User = Depends(get_current_user)):
+    return user
 
 
 @router.post('/sign-up', response_model=Token)
@@ -26,11 +31,6 @@ def sign_in(
     return service.authenticate_user(form_data.username, form_data.password)
 
 
-@router.get('/user', response_model=User)
-def get_user(user: User = Depends(get_current_user)):
-    return user
-
-
-@router.delete('/user')
+@router.delete('/user', status_code=status.HTTP_204_NO_CONTENT)
 def delete_user(user: User = Depends(get_current_user), service: AuthService = Depends()):
     return service.delete_user(user.id)

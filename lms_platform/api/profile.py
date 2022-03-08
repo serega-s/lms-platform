@@ -1,9 +1,6 @@
-import shutil
-from pathlib import Path
 from typing import Optional
-from uuid import uuid4
 
-from fastapi import APIRouter, Body, Depends, File, UploadFile, Form
+from fastapi import APIRouter, Depends, File, UploadFile
 from lms_platform.utils import static_image_url
 
 from ..models.auth import User
