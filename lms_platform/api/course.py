@@ -55,7 +55,7 @@ def get_course(
     return service.get_course(slug)
 
 
-@router.patch('/{id}', response_model=Course)
+@router.patch('/{slug}', response_model=Course)
 def edit_course(
     slug: str,
     title: str,
