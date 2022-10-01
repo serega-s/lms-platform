@@ -1,3 +1,4 @@
+from email.mime import image
 from typing import Optional
 
 from fastapi import APIRouter, Depends, File, UploadFile
@@ -28,21 +29,16 @@ def create_profile(
     user: User = Depends(get_current_user),
     service: ProfileService = Depends(),
 ):
+    profile_obj = {
+        'full_name': full_name,
+        'bio': bio,
+        'phone_number': phone_number
+    }
+
     if file:
         img_url = static_image_url(f'static/{user.id}/profile/', file)
 
-        profile_obj = {
-            'full_name': full_name,
-            'bio': bio,
-            'phone_number': phone_number,
-            'image': img_url
-        }
-    else:
-        profile_obj = {
-            'full_name': full_name,
-            'bio': bio,
-            'phone_number': phone_number,
-        }
+        profile_obj |= {'image': img_url}
 
     profile_data = ProfileCreate.parse_obj(profile_obj)
 
@@ -58,21 +54,16 @@ def edit_profile(
     user: User = Depends(get_current_user),
     service: ProfileService = Depends(),
 ):
+    profile_obj = {
+        'full_name': full_name,
+        'bio': bio,
+        'phone_number': phone_number
+    }
+
     if file:
         img_url = static_image_url(f'static/{user.id}/profile/', file)
 
-        profile_obj = {
-            'full_name': full_name,
-            'bio': bio,
-            'phone_number': phone_number,
-            'image': img_url
-        }
-    else:
-        profile_obj = {
-            'full_name': full_name,
-            'bio': bio,
-            'phone_number': phone_number,
-        }
+        profile_obj |= {'image': img_url}
 
     profile_data = ProfileUpdate.parse_obj(profile_obj)
 

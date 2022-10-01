@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime, timezone
 from typing import Optional
 
 from fastapi import APIRouter, Depends, File, UploadFile, status
@@ -33,7 +33,7 @@ def create_course(
     service: CourseService = Depends()
 ):
     img_url = static_image_url(f'static/{user.id}/course/', file)
-    slugified_title = slugify(title) + '-' + str(datetime.utcnow())
+    slugified_title = f'{slugify(title)}-by-{user.id}-on-{str(date.today())}'
 
     course_obj = {
         'title': title,
@@ -65,7 +65,7 @@ def edit_course(
     user: User = Depends(get_current_user),
     service: CourseService = Depends()
 ):
-    slugified_title = slugify(title) + '-' + str(datetime.utcnow())
+    slugified_title = f'{slugify(title)}-by-{user.id}-on-{str(date.today())}'
     course_obj = {
         'title': title,
         'slug': slugified_title,
@@ -75,7 +75,7 @@ def edit_course(
 
     if file:
         img_url = static_image_url(f'static/{user.id}/course/', file)
-        course_obj.update(image=img_url)
+        course_obj |= {'image': img_url}
 
     course_data = CourseCreate.parse_obj(course_obj)
 

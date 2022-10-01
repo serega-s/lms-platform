@@ -24,17 +24,13 @@ class CourseService:
         return course
 
     def get_course(self, slug: str) -> FullCourse:
-        course = self._get_course(slug=slug).first()
-
-        if not course:
+        if course := self._get_course(slug=slug).first():
+            return course
+        else:
             raise HTTP404Exception()
 
-        return course
-
     def get_courses(self) -> list[Course]:
-        courses = self.session.query(tables.Course).all()
-
-        return courses
+        return self.session.query(tables.Course).all()
 
     def create_course(self, user_id: int, course_data: CourseCreate, file: Any) -> Course:
         with open(course_data.image, 'wb+') as file_obj:

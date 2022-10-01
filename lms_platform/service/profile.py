@@ -15,17 +15,13 @@ class ProfileService:
         self.session = session
 
     def _get_profile(self, user_id: int):
-        profile = self.session.query(
-            tables.Profile).filter_by(user_id=user_id).first()
-        return profile
+        return self.session.query(tables.Profile).filter_by(user_id=user_id).first()
 
     def get_profile(self, user_id: int) -> Profile:
-        profile = self._get_profile(user_id)
-
-        if not profile:
+        if profile := self._get_profile(user_id):
+            return profile
+        else:
             raise HTTP404Exception()
-
-        return profile
 
     def create_profile(
         self,
