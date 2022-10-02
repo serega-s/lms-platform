@@ -2,7 +2,7 @@ from email.mime import image
 from typing import Optional
 
 from fastapi import APIRouter, Depends, File, UploadFile
-from lms_platform.utils import static_image_url
+from lms_platform.utils import build_image_url
 
 from ..models.auth import User
 from ..models.profile import Profile, ProfileCreate, ProfileUpdate
@@ -36,7 +36,7 @@ def create_profile(
     }
 
     if file:
-        img_url = static_image_url(f'static/{user.id}/profile/', file)
+        img_url = build_image_url(f'static/{user.id}/profile/', file)
 
         profile_obj |= {'image': img_url}
 
@@ -61,7 +61,7 @@ def edit_profile(
     }
 
     if file:
-        img_url = static_image_url(f'static/{user.id}/profile/', file)
+        img_url = build_image_url(f'static/{user.id}/profile/', file)
 
         profile_obj |= {'image': img_url}
 

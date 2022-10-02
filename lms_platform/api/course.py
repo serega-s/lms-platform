@@ -8,7 +8,7 @@ from ..models.auth import User
 from ..models.course import Course, CourseCreate
 from ..service.auth import get_current_user
 from ..service.course import CourseService
-from ..utils import static_image_url
+from ..utils import build_image_url
 
 router = APIRouter(
     prefix='/courses',
@@ -32,7 +32,7 @@ def create_course(
     user: User = Depends(get_current_user),
     service: CourseService = Depends()
 ):
-    img_url = static_image_url(f'static/{user.id}/course/', file)
+    img_url = build_image_url(f'static/{user.id}/course/', file)
     slugified_title = f'{slugify(title)}-by-{user.id}-on-{str(date.today())}'
 
     course_obj = {
@@ -74,7 +74,7 @@ def edit_course(
     }
 
     if file:
-        img_url = static_image_url(f'static/{user.id}/course/', file)
+        img_url = build_image_url(f'static/{user.id}/course/', file)
         course_obj |= {'image': img_url}
 
     course_data = CourseCreate.parse_obj(course_obj)
