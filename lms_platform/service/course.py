@@ -2,6 +2,7 @@ import shutil
 from typing import Any, Optional
 
 from fastapi import Depends
+from lms_platform.utils import copy_fileobj
 from sqlalchemy.orm import Session
 
 from .. import tables
@@ -33,8 +34,8 @@ class CourseService:
         return self.session.query(tables.Course).all()
 
     def create_course(self, user_id: int, course_data: CourseCreate, file: Any) -> Course:
-        with open(course_data.image, 'wb+') as file_obj:
-            shutil.copyfileobj(file.file, file_obj)
+        #
+        copy_fileobj(course_data.image, file.file)
 
         course = tables.Course(**course_data.dict(), user_id=user_id)
 
@@ -44,10 +45,10 @@ class CourseService:
         return course
 
     def edit_course(
-        self, 
-        user_id: int, 
-        slug: str, 
-        course_data: CourseUpdate, 
+        self,
+        user_id: int,
+        slug: str,
+        course_data: CourseUpdate,
         file: Optional[Any] = None
     ) -> Course:
         course = self._get_course(slug=slug).first()
@@ -59,8 +60,7 @@ class CourseService:
             raise HTTP404Exception()
 
         if file:
-            with open(course_data.image, 'wb+') as file_obj:
-                shutil.copyfileobj(file.file, file_obj)
+            copy_fileobj(course_data.image, file.file)
         if not course_data.image:
             course_data.image = course.image
 
