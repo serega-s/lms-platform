@@ -1,4 +1,3 @@
-import shutil
 from typing import Any, Optional
 
 from fastapi import Depends
@@ -57,9 +56,8 @@ class ProfileService:
             raise HTTP404Exception()
 
         if file:
-            # with open(profile_data.image, 'wb+') as file_obj:
-            #     shutil.copyfileobj(file.file, file_obj)
             copy_fileobj(profile_data.image, file.file)
+
         if not profile_data.image:
             profile_data.image = profile.image
 
