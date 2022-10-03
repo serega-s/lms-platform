@@ -6,7 +6,6 @@ from . import tables
 from .api import router
 from .database import engine
 
-
 tables.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
