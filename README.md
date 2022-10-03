@@ -15,9 +15,9 @@ python -m lms_platform
 
 #### Swagger API Documenting
 ```
-http://127.0.0.1:8000/api/docs/
+http://127.0.0.1:8000/docs/
 ```
 #### Redoc API Documenting
 ```
-http://127.0.0.1:8000/api/redoc/
+http://127.0.0.1:8000/redoc/
 ```
