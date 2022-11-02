@@ -1,10 +1,14 @@
 from typing import Optional
+
 from pydantic import BaseModel
 
 from .lesson import Lesson
 
 
 class CourseBase(BaseModel):
+    """
+        Base structure of Course model object
+    """
     title: str
     slug: str
     short_description: str
@@ -13,14 +17,23 @@ class CourseBase(BaseModel):
 
 
 class CourseCreate(CourseBase):
+    """
+        Create Course object
+    """
     ...
 
 
 class CourseUpdate(CourseBase):
+    """
+        Update Course object
+    """
     ...
 
 
 class FullCourse(CourseBase):
+    """
+        Full course object with lessons
+    """
     id: int
     lessons: list[Lesson]
 
@@ -29,6 +42,9 @@ class FullCourse(CourseBase):
 
 
 class Course(CourseBase):
+    """
+        Initial Course object 
+    """
     id: int
 
     class Config:

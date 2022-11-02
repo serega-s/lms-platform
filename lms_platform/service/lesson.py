@@ -39,7 +39,7 @@ class LessonService:
 
         return lesson
 
-    def get_lesson(self, course_slug: str, lesson_slug: str) -> Lesson:
+    def get_lesson(self, course_slug: str, lesson_slug: str) -> Lesson | None:
         course = self._get_course(slug=course_slug).first()
         return self._get_lesson(course_id=course.id, slug=lesson_slug).first()
 

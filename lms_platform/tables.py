@@ -77,7 +77,7 @@ class Comment(Base):
         "courses.id", ondelete="CASCADE"), nullable=False)
     lessons_id = sa.Column(sa.Integer, sa.ForeignKey(
         "lessons.id", ondelete="CASCADE"), nullable=False)
-    user_id = sa.Column(sa.Integer, sa.ForeignKey(
+    user_id = sa.Column(sa.Integer, sa.ForeignKey( 
         "users.id", ondelete="CASCADE"), nullable=False)
     created_at = sa.Column(sa.TIMESTAMP(timezone=True),
                            nullable=False, server_default=sa.text('now()'))

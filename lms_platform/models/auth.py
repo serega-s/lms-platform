@@ -5,20 +5,32 @@ from pydantic import BaseModel
 
 
 class UserRole(str, Enum):
+    """
+        Two types of user role choice
+    """
     TEACHER = 'teacher'
     STUDENT = 'student'
 
 
 class UserBase(BaseModel):
+    """
+        Base structure of User model object
+    """
     email: str
     role: UserRole
 
 
 class UserCreate(UserBase):
+    """
+        Create User object
+    """
     password: str
 
 
 class User(UserBase):
+    """
+        Initial User object
+    """
     id: int
 
     class Config:

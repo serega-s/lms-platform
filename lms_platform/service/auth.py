@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
@@ -35,15 +35,15 @@ class AuthService:
         try:
             payload = jwt.decode(token, settings.secret_key, algorithms=[
                                  settings.algorithm])
-        except JWTError:
-            raise HTTP401Exception()
+        except JWTError as e:
+            raise HTTP401Exception() from e
 
         user_data = payload.get('user')
 
         try:
             user = User.parse_obj(user_data)
-        except ValidationError:
-            raise HTTP401Exception()
+        except ValidationError as exc:
+            raise HTTP401Exception() from exc
 
         return user
 
@@ -51,7 +51,7 @@ class AuthService:
     def create_token(cls, user: tables.User) -> Token:
         user_data = User.from_orm(user)
 
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         payload = {
             'iat': now,
